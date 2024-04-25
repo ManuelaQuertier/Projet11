@@ -33,7 +33,7 @@ public with sharing class OrderTriggerHandler {
     }
 
     public void checkActiveOnAccount(){
-        List <Order> newOrderList = [SELECT Id, AccountId FROM Order WHERE Id= :this.newList];
+        List <Order> newOrderList = [SELECT Id, AccountId FROM Order WHERE Id in:this.newList];
         Set<Id> accountIds = new set<Id>();
 
         for(Order newOrder : newOrderList){
@@ -50,27 +50,21 @@ public with sharing class OrderTriggerHandler {
     }
 
     public void uncheckActiveOnAccount(){
-        List <Order> newOrderList = [SELECT Id, AccountId FROM Order WHERE Id= :this.oldList];
+        List <Order> oldOrderList = [SELECT Id, AccountId FROM Order WHERE Id in:this.oldList];
+        
         Set<Id> accountIds = new set<Id>();
 
-        for(Order newOrder :newOrderList){
+        for(Order newOrder :oldOrderList){
             accountIds.add(newOrder.AccountId);
         }
-    
         List<Account> accountWithoutOrder = [SELECT Id, Active__c ,(SELECT id FROM Orders) FROM Account WHERE Id IN:accountIds];
-        System.debug(accountWithoutOrder);
+	
+        for(Account account :accountWithoutOrder){
+            if(account.Orders.size() <= 1 ){
+                account.Active__c = false;
+            }
+        }
+		update accountWithoutOrder;
     }
 
-    public static Boolean doesAccountHasOrder(Id accountId){
-
-        Boolean accountHasOrder;
-
-        List<Order> accountOrders = [SELECT Id, AccountId FROM Order WHERE AccountId = :accountId];
-        //System.debug(accountOrders.size());
-        if(accountOrders.size() > 0){
-            accountHasOrder = true;
-        } else accountHasOrder = false;
-        //System.debug(accountHasOrder);
-        return accountHasOrder;
-    }
 }
