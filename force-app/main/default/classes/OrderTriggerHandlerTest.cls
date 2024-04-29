@@ -11,7 +11,7 @@ public class OrderTriggerHandlerTest {
     newContract.status = 'Activated';
     update newContract;
 
-    TestDataFactory.createOrders(accountId, contractId, 1);
+    TestDataFactory.createOrders(accountId, contractId, 5);
     }
 
     @isTest
@@ -33,5 +33,14 @@ public class OrderTriggerHandlerTest {
             System.assert(e.getMessage().contains('Thanks to add products before activate an order'), 'message=' + e.getMessage());
         }
 
+    }
+
+    @isTest
+    static void checkActiveOnAccountTest(){
+
+        Order myNewOrder = [SELECT Id, AccountId from Order LIMIT 1 ];
+        Account myAccountToVerify = [SELECT Id, Active__c FROM Account WHERE Id = :myNewOrder.AccountId];
+
+        System.assertEquals('account.active = true', 'get the account active');
     }
 }

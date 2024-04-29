@@ -1,4 +1,4 @@
-trigger OrderTrigger on Order (before update, after insert, before delete) {
+trigger OrderTrigger on Order (before update, After insert, before delete) {
 
     if(Trigger.isBefore && Trigger.isUpdate){
         OrderTriggerHandler instance = new OrderTriggerHandler();
