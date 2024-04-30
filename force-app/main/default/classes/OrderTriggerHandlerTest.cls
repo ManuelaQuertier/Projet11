@@ -11,7 +11,7 @@ public class OrderTriggerHandlerTest {
     newContract.status = 'Activated';
     update newContract;
 
-    TestDataFactory.createOrders(accountId, contractId, 1);
+    TestDataFactory.createOrders(accountId, contractId, 5);
     }
 
     @isTest
@@ -33,5 +33,39 @@ public class OrderTriggerHandlerTest {
             System.assert(e.getMessage().contains('Thanks to add products before activate an order'), 'message=' + e.getMessage());
         }
 
+    }
+
+    @isTest
+    static void checkActiveOnAccountTest(){
+
+        Order myNewOrder = [SELECT Id, AccountId from Order LIMIT 1 ];
+        Account myAccountToVerify = [SELECT Id, Active__c FROM Account WHERE Id = :myNewOrder.AccountId];
+
+        System.assertEquals(myAccountToVerify.Active__c , true);
+    }
+
+    @isTest
+    static void uncheckActiveOnAccountTest(){
+
+        List<Order> ordersCreated = [SELECT Id, AccountId FROM Order];
+
+        Id accountId = [SELECT Id FROM Account].Id;
+
+        ordersCreated.remove(OrdersCreated.size()-1);
+
+        Test.startTest();
+
+        delete ordersCreated;
+        Account myTestAccountActive = [SELECT Id, Active__c FROM Account WHERE Id = :accountId];
+
+        Order lastOrder = [SELECT Id FROM Order];
+
+        delete lastOrder;
+        Account myTestAccountInactive = [SELECT Id, Active__c FROM Account WHERE Id = :accountId];
+
+        Test.stopTest();
+
+        System.assertEquals(myTestAccountActive.Active__c , true);
+        System.assertEquals(myTestAccountInactive.Active__c, false);
     }
 }
