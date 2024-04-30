@@ -41,6 +41,31 @@ public class OrderTriggerHandlerTest {
         Order myNewOrder = [SELECT Id, AccountId from Order LIMIT 1 ];
         Account myAccountToVerify = [SELECT Id, Active__c FROM Account WHERE Id = :myNewOrder.AccountId];
 
-        System.assertEquals('account.active = true', 'get the account active');
+        System.assertEquals(myAccountToVerify.Active__c , true);
+    }
+
+    @isTest
+    static void uncheckActiveOnAccountTest(){
+
+        List<Order> ordersCreated = [SELECT Id, AccountId FROM Order];
+
+        Id accountId = [SELECT Id FROM Account].Id;
+
+        ordersCreated.remove(OrdersCreated.size()-1);
+
+        Test.startTest();
+
+        delete ordersCreated;
+        Account myTestAccountActive = [SELECT Id, Active__c FROM Account WHERE Id = :accountId];
+
+        Order lastOrder = [SELECT Id FROM Order];
+
+        delete lastOrder;
+        Account myTestAccountInactive = [SELECT Id, Active__c FROM Account WHERE Id = :accountId];
+
+        Test.stopTest();
+
+        System.assertEquals(myTestAccountActive.Active__c , true);
+        System.assertEquals(myTestAccountInactive.Active__c, false);
     }
 }
