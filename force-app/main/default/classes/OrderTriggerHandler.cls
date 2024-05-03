@@ -50,21 +50,21 @@ public with sharing class OrderTriggerHandler {
     }
 
     public void uncheckActiveOnAccount(){
-        List <Order> oldOrderList = [SELECT Id, AccountId FROM Order WHERE Id in:this.oldList];
-        
-        Set<Id> accountIds = new set<Id>();
+        List<Order> ordersDeleted = [SELECT Id, AccountId FROM Order WHERE Id in:this.oldList ALL ROWS];
+        Set<Id> accountIds = new Set<Id>();
 
-        for(Order newOrder :oldOrderList){
-            accountIds.add(newOrder.AccountId);
-        }
-        List<Account> accountWithoutOrder = [SELECT Id, Active__c ,(SELECT id FROM Orders) FROM Account WHERE Id IN:accountIds];
-	
-        for(Account account :accountWithoutOrder){
-            if(account.Orders.size() <= 1 ){
-                account.Active__c = false;
+        for(Order orderDeleted:ordersDeleted){
+            if (!accountIds.contains(orderDeleted.AccountId)){
+                accountIds.add(orderDeleted.AccountId);
             }
         }
-		update accountWithoutOrder;
-    }
+        List<Account> accountsToVerify = [SELECT Id, Active__c , (SELECT Id FROM Orders) FROM Account WHERE Id IN :accountIds];
 
-}
+        for (Account accountToVerify :accountsToVerify){
+            if (accountToVerify.Orders.size() == 0){
+                accountToVerify.Active__c = false;
+            }
+        }
+        update accountsToVerify;
+        }
+    }

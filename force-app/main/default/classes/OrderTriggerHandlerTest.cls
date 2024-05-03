@@ -41,31 +41,42 @@ public class OrderTriggerHandlerTest {
         Order myNewOrder = [SELECT Id, AccountId from Order LIMIT 1 ];
         Account myAccountToVerify = [SELECT Id, Active__c FROM Account WHERE Id = :myNewOrder.AccountId];
 
-        System.assertEquals(myAccountToVerify.Active__c , true);
+        System.assertEquals(true, myAccountToVerify.Active__c);
     }
 
     @isTest
-    static void uncheckActiveOnAccountTest(){
+    static void activeWithOneOrderOnAccountTest(){
 
         List<Order> ordersCreated = [SELECT Id, AccountId FROM Order];
 
         Id accountId = [SELECT Id FROM Account].Id;
 
-        ordersCreated.remove(OrdersCreated.size()-1);
+        ordersCreated.remove(ordersCreated.size()-1); // enlève un seul Order de la liste à supprimer
 
         Test.startTest();
-
-        delete ordersCreated;
-        Account myTestAccountActive = [SELECT Id, Active__c FROM Account WHERE Id = :accountId];
-
-        Order lastOrder = [SELECT Id FROM Order];
-
-        delete lastOrder;
-        Account myTestAccountInactive = [SELECT Id, Active__c FROM Account WHERE Id = :accountId];
-
+        delete ordersCreated;// supprime les orders restant
         Test.stopTest();
 
-        System.assertEquals(myTestAccountActive.Active__c , true);
-        System.assertEquals(myTestAccountInactive.Active__c, false);
+        Account myTestAccountActive = [SELECT Id, Active__c FROM Account WHERE Id = :accountId];
+        System.debug(myTestAccountActive.Active__c);
+        System.assertEquals(true, myTestAccountActive.Active__c);
+ 
     }
+
+    @isTest
+    static void activeFalseOnAccountTest(){
+
+        List<Order> ordersCreated = [SELECT Id, AccountId FROM Order];
+
+        Id accountId = [SELECT Id FROM Account].Id;
+
+        Test.startTest();
+        delete ordersCreated;
+        
+        Test.stopTest();
+        Account myTestAccountInactive = [SELECT Id, Active__c FROM Account WHERE Id = :accountId];
+        System.assertEquals(false,myTestAccountInactive.Active__c);
+ 
+    }
+
 }

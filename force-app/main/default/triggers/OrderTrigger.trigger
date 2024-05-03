@@ -1,4 +1,4 @@
-trigger OrderTrigger on Order (before update, After insert, before delete) {
+trigger OrderTrigger on Order (before update, After insert, after delete) {
 
     if(Trigger.isBefore && Trigger.isUpdate){
         OrderTriggerHandler instance = new OrderTriggerHandler();
@@ -12,7 +12,7 @@ trigger OrderTrigger on Order (before update, After insert, before delete) {
         instance.checkActiveOnAccount();
     }
 
-    if(Trigger.isBefore && Trigger.isDelete){
+    if(Trigger.isAfter && Trigger.isDelete){
         OrderTriggerHandler instance = new OrderTriggerHandler();
 
         instance.uncheckActiveOnAccount();
