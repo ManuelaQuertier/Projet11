@@ -9,11 +9,10 @@ public with sharing class TaskCreationForAccountService {
             Task myTask = new Task(
 				WhatId= account.id,
                 OwnerId = account.OwnerId,
-				ActivityDate = System.today(),
                 Subject = 'Call',
                 Priority = 'Normal',
                 IsReminderSet = true,
-                ReminderDateTime = System.today()+5
+                ReminderDateTime = System.now()+5
                 );
                 tasksToCreate.add(myTask);
         }

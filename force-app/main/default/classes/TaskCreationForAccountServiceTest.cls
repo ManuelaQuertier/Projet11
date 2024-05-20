@@ -19,15 +19,14 @@ public class TaskCreationForAccountServiceTest {
     	Id batchId = Database.executeBatch(new TaskCreationForAccount_Batch());
     	Test.stopTest();
 
-        Task newTask = [SELECT Id, OwnerId, AccountId, ActivityDate, Subject, Priority, IsReminderSet, ReminderDateTime FROM Task];
+        Task newTask = [SELECT Id, OwnerId, AccountId, CreatedDate, Subject, Priority, IsReminderSet, ReminderDateTime FROM Task];
 
         System.assertEquals(accountCreated.OwnerId, newTask.OwnerId, 'The Owner of the Task should be the same as the Account owner');
         System.assertEquals(accountCreated.Id, newTask.AccountId, 'The AccountId of the Task should be the same as the Account Id');
-        System.assertEquals(System.today(), newTask.ActivityDate, 'The Date expected is the scheduled date of the batch');
         System.assertEquals('Call', newTask.Subject, 'The Subject should be Call');
         System.assertEquals('Normal', newTask.Priority, 'The Priority should be Normal');
         System.assertEquals(true, newTask.IsReminderSet, 'The Reminder Set should be true');
-        System.assertEquals(newTask.ActivityDate + 5, newTask.ReminderDateTime, 'The Reminder DateTime Should be Due date +5 days');
+        System.assertEquals(newTask.CreatedDate + 5, newTask.ReminderDateTime, 'The Reminder DateTime Should be Due date +5 days');
     }
 
     
