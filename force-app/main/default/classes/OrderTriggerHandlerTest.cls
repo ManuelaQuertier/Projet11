@@ -41,7 +41,7 @@ public class OrderTriggerHandlerTest {
         Order myNewOrder = [SELECT Id, AccountId from Order LIMIT 1 ];
         Account myAccountToVerify = [SELECT Id, Active__c FROM Account WHERE Id = :myNewOrder.AccountId];
 
-        System.assertEquals(true, myAccountToVerify.Active__c);
+        System.assertEquals(true, myAccountToVerify.Active__c, 'If Account as Orders he must be actif');
     }
 
     @isTest
@@ -54,12 +54,12 @@ public class OrderTriggerHandlerTest {
         ordersCreated.remove(ordersCreated.size()-1); // enlève un seul Order de la liste à supprimer
 
         Test.startTest();
-        delete ordersCreated;// supprime les orders restant
+        delete ordersCreated;// supprime les orders de la liste
         Test.stopTest();
 
         Account myTestAccountActive = [SELECT Id, Active__c FROM Account WHERE Id = :accountId];
         System.debug(myTestAccountActive.Active__c);
-        System.assertEquals(true, myTestAccountActive.Active__c);
+        System.assertEquals(true, myTestAccountActive.Active__c,'If Account as Orders he must be active');
  
     }
 
@@ -75,7 +75,7 @@ public class OrderTriggerHandlerTest {
         
         Test.stopTest();
         Account myTestAccountInactive = [SELECT Id, Active__c FROM Account WHERE Id = :accountId];
-        System.assertEquals(false,myTestAccountInactive.Active__c);
+        System.assertEquals(false,myTestAccountInactive.Active__c,'If the Account has no Order, he must be inactive');
  
     }
 

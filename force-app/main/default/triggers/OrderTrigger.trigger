@@ -1,20 +1,19 @@
 trigger OrderTrigger on Order (before update, After insert, after delete) {
 
-    if(Trigger.isBefore && Trigger.isUpdate){
-        OrderTriggerHandler instance = new OrderTriggerHandler();
+    OrderTriggerHandler orderTriggerHandler = new OrderTriggerHandler();
 
-        instance.activeStatusCondition();
+    if(Trigger.isBefore && Trigger.isUpdate){
+
+        orderTriggerHandler.activeStatusCondition();
     }
 
     if(Trigger.isAfter && Trigger.isInsert){
-        OrderTriggerHandler instance = new OrderTriggerHandler();
 
-        instance.checkActiveOnAccount();
+        orderTriggerHandler.checkActiveOnAccount();
     }
 
     if(Trigger.isAfter && Trigger.isDelete){
-        OrderTriggerHandler instance = new OrderTriggerHandler();
 
-        instance.uncheckActiveOnAccount();
+        orderTriggerHandler.uncheckActiveOnAccount();
     }
 }
