@@ -43,7 +43,9 @@ public with sharing class OrderTriggerHandler {
         List<Account> accountsWithOrders = [SELECT Id, Active__c FROM Account WHERE id IN:accountIds];
 
         for(Account account :accountsWithOrders){
-            account.Active__c = true;
+            if(account.Active__c == false){
+                account.Active__c = true;
+            }
         }
         update accountsWithOrders;
 

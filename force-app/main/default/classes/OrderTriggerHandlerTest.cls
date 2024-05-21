@@ -15,7 +15,7 @@ public class OrderTriggerHandlerTest {
     }
 
     @isTest
-    static void OrderWithOrderItemTest() {
+    static void orderWithoutOrderItemTest() {
 
         Order myNewOrder = [ SELECT Id, Status from Order LIMIT 1 ];
 

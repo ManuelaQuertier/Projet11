@@ -15,7 +15,7 @@ public class TaskCreationForAccountServiceTest {
     static void taskCreationTest(){
         Account accountCreated = [SELECT Id, OwnerId FROM Account];
         
-        Test.startTest();
+      Test.startTest();
     	Id batchId = Database.executeBatch(new TaskCreationForAccount_Batch());
     	Test.stopTest();
 
@@ -34,7 +34,6 @@ public class TaskCreationForAccountServiceTest {
   static void testSchedulerMethod() {
 
     String timeToSchedule = '0 0 0 6 5 ? 2042';
-    System.debug(timeToSchedule);
 
     Test.startTest();
     String jodId = System.schedule('ExecuteBatchTest', timeToSchedule, new TaskCreationForAccount_Batch());
@@ -44,6 +43,7 @@ public class TaskCreationForAccountServiceTest {
       select Id, ApexClassID, ApexClass.Name, Status,
       JobType from AsyncApexJob where JobType = 'ScheduledApex'
     ];
+
     System.assertEquals(1, jobsScheduled.size(), 'expecting one apex batch job');
   }
 }
