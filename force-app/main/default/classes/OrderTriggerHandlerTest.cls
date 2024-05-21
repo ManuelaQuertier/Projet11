@@ -41,7 +41,7 @@ public class OrderTriggerHandlerTest {
         Order myNewOrder = [SELECT Id, AccountId from Order LIMIT 1 ];
         Account myAccountToVerify = [SELECT Id, Active__c FROM Account WHERE Id = :myNewOrder.AccountId];
 
-        System.assertEquals(true, myAccountToVerify.Active__c, 'If Account as Orders he must be actif');
+        System.assertEquals(true, myAccountToVerify.Active__c, 'If Account as Orders he must be active');
     }
 
     @isTest
