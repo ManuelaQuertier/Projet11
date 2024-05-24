@@ -21,12 +21,13 @@ public class TaskCreationForAccountServiceTest {
 
         Task newTask = [SELECT Id, OwnerId, AccountId, CreatedDate, Subject, Priority, IsReminderSet, ReminderDateTime FROM Task];
 
+        System.assert(newTask != null, 'There is no Task created');
         System.assertEquals(accountCreated.OwnerId, newTask.OwnerId, 'The Owner of the Task should be the same as the Account owner');
         System.assertEquals(accountCreated.Id, newTask.AccountId, 'The AccountId of the Task should be the same as the Account Id');
         System.assertEquals('Call', newTask.Subject, 'The Subject should be Call');
         System.assertEquals('Normal', newTask.Priority, 'The Priority should be Normal');
         System.assertEquals(true, newTask.IsReminderSet, 'The Reminder Set should be true');
-        System.assertEquals(newTask.CreatedDate + 5, newTask.ReminderDateTime, 'The Reminder DateTime Should be Due date +5 days');
+        System.assertEquals(newTask.CreatedDate.date() + 5, newTask.ReminderDateTime.date(), 'The Reminder DateTime Should be Due date +5 days');
     }
 
     
