@@ -19,8 +19,8 @@ public class OrderTriggerHandlerTest {
 
         Order myNewOrder = [ SELECT Id, Status from Order LIMIT 1 ];
 
+        //Au passage de Draft à Avtivated, si l'Order n'a pas de produit un message d'erreur est envoyé et la transaction est annulée
         try{
-
             Test.startTest();
             myNewOrder.Status = 'Activated';
             update myNewOrder;
@@ -29,7 +29,7 @@ public class OrderTriggerHandlerTest {
             System.assert(false, 'Exeption Expected');
 
         } catch (DmlException e) {
-
+            
             System.assert(e.getMessage().contains('Thanks to add products before activate an order'), 'message=' + e.getMessage());
         }
 
