@@ -1,34 +1,34 @@
 @isTest
 public class TaskCreationForAccountServiceTest {
     
-    @testSetup
-    static void testData(){
-    	Id accountId = TestDataFactory.createAccount();
-    	Id contractId = TestDataFactory.createContract(accountId);
+  @testSetup
+  static void testData(){
+  	Id accountId = TestDataFactory.createAccount();
+  	Id contractId = TestDataFactory.createContract(accountId);
 
-    	Contract newContract = [ SELECT Id, status FROM Contract ];
-    	newContract.status = 'Activated';
-    	update newContract;
-    }
+  	Contract newContract = [ SELECT Id, status FROM Contract ];
+  	newContract.status = 'Activated';
+  	update newContract;
+  }
     
-    @isTest
-    static void taskCreationTest(){
-        Account accountCreated = [SELECT Id, OwnerId FROM Account];
+  @isTest
+  static void taskCreationTest(){
+      Account accountCreated = [SELECT Id, OwnerId FROM Account];
         
-      Test.startTest();
-    	Id batchId = Database.executeBatch(new TaskCreationForAccount_Batch());
-    	Test.stopTest();
+    Test.startTest();
+  	Id batchId = Database.executeBatch(new TaskCreationForAccount_Batch());
+  	Test.stopTest();
 
-        Task newTask = [SELECT Id, OwnerId, AccountId, CreatedDate, Subject, Priority, IsReminderSet, ReminderDateTime FROM Task];
+    Task newTask = [SELECT Id, OwnerId, AccountId, CreatedDate, Subject, Priority, IsReminderSet, ReminderDateTime FROM Task];
 
-        System.assert(newTask != null, 'There is no Task created');
-        System.assertEquals(accountCreated.OwnerId, newTask.OwnerId, 'The Owner of the Task should be the same as the Account owner');
-        System.assertEquals(accountCreated.Id, newTask.AccountId, 'The AccountId of the Task should be the same as the Account Id');
-        System.assertEquals('Call', newTask.Subject, 'The Subject should be Call');
-        System.assertEquals('Normal', newTask.Priority, 'The Priority should be Normal');
-        System.assertEquals(true, newTask.IsReminderSet, 'The Reminder Set should be true');
-        System.assertEquals(newTask.CreatedDate.date() + 5, newTask.ReminderDateTime.date(), 'The Reminder DateTime Should be Due date +5 days');
-    }
+    System.assert(newTask != null, 'There is no Task created');
+    System.assertEquals(accountCreated.OwnerId, newTask.OwnerId, 'The Owner of the Task should be the same as the Account owner');
+    System.assertEquals(accountCreated.Id, newTask.AccountId, 'The AccountId of the Task should be the same as the Account Id');
+    System.assertEquals('Call', newTask.Subject, 'The Subject should be Call');
+    System.assertEquals('Normal', newTask.Priority, 'The Priority should be Normal');
+    System.assertEquals(true, newTask.IsReminderSet, 'The Reminder Set should be true');
+    System.assertEquals(newTask.CreatedDate.date() + 5, newTask.ReminderDateTime.date(), 'The Reminder DateTime Should be Due date +5 days');
+  }
 
     
   @isTest 
