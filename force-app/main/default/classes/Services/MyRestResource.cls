@@ -4,9 +4,9 @@ global with sharing class MyRestResource {
     @HttpPost
     global static Id createContact(String firstName, String lastName, String email) {
 
-        Contact checkcontact = [SELECT Id, Email FROM Contact WHERE Email = :email];
+        List<Contact> checkcontact = [SELECT Id, Email FROM Contact WHERE Email = :email];
 
-        if (checkcontact == null){
+        if (checkcontact.size() == 0){
 
             Contact newContact = new Contact(
                 FirstName = firstName,
@@ -15,7 +15,7 @@ global with sharing class MyRestResource {
             insert newContact;
             return null;
         } else {
-            return checkcontact.Id;
+            return checkcontact[0].Id;
         }
     }
 }
