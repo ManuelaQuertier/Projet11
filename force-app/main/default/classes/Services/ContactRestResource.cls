@@ -1,5 +1,5 @@
 @RestResource(urlMapping= '/Contact/*')
-global with sharing class MyRestResource {
+global with sharing class ContactRestResource {
 
     @HttpPost
     global static Id createContact(String firstName, String lastName, String email) {
