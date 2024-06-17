@@ -6,16 +6,15 @@ global with sharing class ContractRestResource {
 
         Id accountId = [SELECT Id FROM Account WHERE Name = :accountName].Id;
 
+        Contract newContract = new Contract(
+            AccountID = accountId,
+            Status = 'Draft',
+            ContractTerm = integer.valueOf(contractTerm),
+            StartDate = date.parse(contractStartDate)
+            );
 
-            Contract newContract = new Contract(
-                AccountID = accountId,
-                Status = 'Draft',
-                ContractTerm = integer.valueOf(contractTerm),
-                StartDate = date.parse(contractStartDate)
-                );
-            insert newContract;
-            return newContract.Id;
-
+        insert newContract;
+        return newContract.Id;
     }
 
     
