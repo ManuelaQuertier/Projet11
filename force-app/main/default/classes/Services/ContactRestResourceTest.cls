@@ -1,42 +1,47 @@
 @isTest
 private class ContactRestResourceTest {
 
-    @TestSetup
-    static void makeData(){
-       Contact testContact = new Contact(
-       		FirstName = 'TestContact',
-       		LastName = 'ContactTest',
-			Email = 'thisemail@doesexist.com');
-        insert testContact;
-    }
     
     @isTest
     static void createContactTest() {
 
+        Contact testContact = new Contact(
+            FirstName = 'TestContact',
+            LastName = 'ContactTest',
+            Email = 'thisemail@doesexist.com');
+        insert testContact;
+
         //Create the HTTP request
         RestRequest request = new RestRequest();
-
         request.requestUri = genericURI();
         request.httpMethod = 'POST';
-        request.requestBody = Blob.valueOf('{ "firstName" : "Second","lastName" : "Try","email" : "thisemail2@doesntexist.com" }');
+        request.requestBody = Blob.valueOf('{ "FirstName" : "fourth","LastName" : "essai","Email" : "thisemailTest3@doesntexist.com" }');
         
         RestContext.request = request;
 
         //call the method to test
         Test.startTest();
-       	Id contactId = ContactRestResource.createContact();
+        Id contactId = ContactRestResource.createContact();
         Test.stopTest();
         //Verify that the Id exist
-        System.Assert(contactId != null);
+        System.Assert(contactId != null, 'a contact must be created');
 
         //Verify that the new record is created
+        Contact firstContact = [SELECT Id, Email From Contact WHERE Email = 'thisemail@doesexist.com'];
         Contact newContact = [SELECT Id FROM Contact WHERE Id = :contactId];
+
+        System.assertNotEquals(firstContact.Id, newContact.Id, 'a new Contact must be created');
         System.Assert(newContact != null , 'Contact not created');
         }
 
     @isTest
     static void createExistingContactTest(){
         
+        Contact testContact = new Contact(
+            FirstName = 'TestContact',
+            LastName = 'ContactTest',
+            Email = 'thisemail@doesexist.com');
+        insert testContact;
         //Select the existing Contact id 
         Id myExistingContact = [SELECT Id FROM Contact WHERE Email = 'thisemail@doesexist.com' LIMIT 1].Id;
         
@@ -50,7 +55,7 @@ private class ContactRestResourceTest {
 
         //try to insert a Contact with an existing Email
         Test.startTest();
-       	Id contactId = ContactRestResource.createContact();
+        Id contactId = ContactRestResource.createContact();
         Test.stopTest();
         
         //Verify that the Id returned is the Id corresponding to the Contact with the existing Email
@@ -59,6 +64,12 @@ private class ContactRestResourceTest {
 
     @isTest
     static void updateContactTest(){
+
+        Contact testContact = new Contact(
+            FirstName = 'TestContact',
+            LastName = 'ContactTest',
+            Email = 'thisemail@doesexist.com');
+        insert testContact;
          
         //Select the existing Contact
         Contact myExistingContact = [SELECT Id, FirstName FROM Contact LIMIT 1];
@@ -74,7 +85,7 @@ private class ContactRestResourceTest {
 
         //call the method to test
         Test.startTest();
-       	Id contactUpdatedId = ContactRestResource.updateContactFields();
+        Id contactUpdatedId = ContactRestResource.updateContactFields();
         Test.stopTest();
 
         //Select the Contact updated
@@ -82,11 +93,17 @@ private class ContactRestResourceTest {
 
         //Verify that the good Contact is updated with the correct info
         System.AssertEquals(myExistingContact.Id, contactUpdatedId, 'Wrong record on update');
-        System.AssertEquals('Update', contactUpdated.FirstName);
+        System.AssertEquals('Update', contactUpdated.FirstName,'The value of this field must have change');
     }
 
     @isTest
     static void deleteContactTest(){
+
+        Contact testContact = new Contact(
+            FirstName = 'TestContact',
+            LastName = 'ContactTest',
+            Email = 'thisemail@doesexist.com');
+        insert testContact;
 
         //Select the existing Contact
         Contact myExistingContact = [SELECT Id, Inactive__c FROM Contact LIMIT 1];
@@ -102,7 +119,7 @@ private class ContactRestResourceTest {
         request.httpMethod = 'DELETE';
         RestContext.request = request;
         //Call the method to test
-       	String confirmationMessage = ContactRestResource.deactiveContact();
+        String confirmationMessage = ContactRestResource.deactiveContact();
         Test.stopTest();
 
         //Select the Contact desactivated

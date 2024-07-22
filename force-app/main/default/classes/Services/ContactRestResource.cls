@@ -8,7 +8,7 @@ global with sharing class ContactRestResource {
     global static Id createContact() {
 
         RestRequest request = RestContext.request;
-        //New Contcat initialization
+        //New Contact initialization
         Contact newContact = new Contact();
 
         //Create a Map to deserialize the JSON string into name-value pairs
@@ -18,12 +18,11 @@ global with sharing class ContactRestResource {
         for(String fieldName : params.keySet()) {
             newContact.put(fieldName, params.get(fieldName));
         }
-
         //Verify if the a contact with this email is yet in Salesforce
         String email = newContact.Email;
-        List<Contact> checkcontact = [SELECT Id, Email FROM Contact WHERE Email = :email];
-        
-        //return the value of the new Contcat or of the existing Contact 
+        List<Contact> checkcontact = [SELECT Id, Email FROM Contact WHERE Email = :email WITH USER_MODE]  ;
+  
+        //return the value of the new Contact or of the existing Contact 
         if (checkcontact.size() == 0){
             insert newContact;
             return newContact.Id;
